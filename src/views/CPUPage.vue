@@ -65,7 +65,7 @@
         <label class="block mb-2">Price</label>
         <input v-model="newCpu.price" type="number" class="w-full border p-2 rounded mb-3" />
         <label class="block mb-2">Socket</label>
-        <input v-model="newCpu.socket" class="w-full border p-2 rounded mb-3" />
+        <input v-model="newCpu.Socket" class="w-full border p-2 rounded mb-3" />
         <label class="block mb-2">Brand</label>
         <input v-model="newCpu.brand" class="w-full border p-2 rounded mb-3" />
         <label class="block mb-2">Image URL</label>
@@ -103,9 +103,9 @@ export default {
   computed: {
     filteredCpuData() {
       return this.cpuData.filter(cpu =>
-        cpu.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        cpu.brand.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-        cpu.socket.toLowerCase().includes(this.searchQuery.toLowerCase())
+        (cpu.title?.toLowerCase() || "").includes(this.searchQuery.toLowerCase()) ||
+        (cpu.brand?.toLowerCase() || "").includes(this.searchQuery.toLowerCase()) ||
+        (cpu.socket?.toLowerCase() || "").includes(this.searchQuery.toLowerCase())
       );
     },
   },
@@ -132,7 +132,9 @@ export default {
     async updateCpu() {
       try {
         await axios.put(`http://localhost:3000/api/cpu/${this.selectedCpu._id}`, this.selectedCpu);
-        this.cpuData = this.cpuData.map(cpu => (cpu._id === this.selectedCpu._id ? this.selectedCpu : cpu));
+        this.cpuData = this.cpuData.map(cpu =>
+          cpu._id === this.selectedCpu._id ? Object.assign({}, this.selectedCpu) : cpu
+        );
         this.selectedCpu = null;
       } catch (error) {
         console.error("Error updating CPU:", error);

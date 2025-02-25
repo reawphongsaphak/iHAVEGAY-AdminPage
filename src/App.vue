@@ -19,23 +19,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import navigation from './components/navigation.vue'
 import submenu from './components/submenu.vue'
 
-// Reactive variable to control submenu visibility
-const isSubmenuVisible = ref(true)
+// Load submenu visibility state from localStorage
+const isSubmenuVisible = ref(JSON.parse(localStorage.getItem('isSubmenuVisible')) ?? true)
 
 // Method to hide the submenu
 const hideSubmenu = () => {
   isSubmenuVisible.value = false
+  localStorage.setItem('isSubmenuVisible', JSON.stringify(false))
 }
 
 // Method to show the submenu again
 const showSubmenu = () => {
   isSubmenuVisible.value = true
+  localStorage.setItem('isSubmenuVisible', JSON.stringify(true))
 }
+
+// Ensure localStorage value is read when the component is mounted
+onMounted(() => {
+  isSubmenuVisible.value = JSON.parse(localStorage.getItem('isSubmenuVisible')) ?? true
+})
 </script>
+
 
 <style>
 </style>
