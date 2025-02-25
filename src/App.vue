@@ -1,39 +1,28 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <h1 class="text-80xl font-bold underline">
-      Hello world!
-  </h1>
+  <div class="flex flex-col h-screen">
+    <!-- Top Navigation Bar -->
+    <navigation />
+
+    <div class="flex flex-1">
+      <!-- Sidebar (Submenu) -->
+      <div>
+        <submenu />
+      </div>
+
+      <!-- Main Content (Dynamic Pages) -->
+      <div class=" bg-white">
+        <router-view />
+        <!-- <HelloWorldVue /> -->
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup>
+// import HelloWorldVue from './components/HelloWorld.vue'
+import navigation from './components/navigation.vue'
+import submenu from './components/submenu.vue'
+</script>
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
+<style>
 </style>
