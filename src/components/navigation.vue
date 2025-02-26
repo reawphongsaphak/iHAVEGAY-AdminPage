@@ -1,9 +1,9 @@
 <template>
-  <div class="navbar bg-green-500 shadow-lg px-4 py-2">
+  <div class="navbar bg-dark-blue shadow-lg px-4 py-2 m-0 p-0">
     <!-- Left Side Dropdown -->
     <div class="flex-none">
       <details class="dropdown">
-        <summary class="btn m-1 text-white hover:bg-green-600 rounded-lg transition-all">Change</summary>
+        <summary class="btn m-1 text-white hover:bg-light-dark-blue rounded-lg transition-all">Change</summary>
         <ul class="menu dropdown-content bg-white text-black rounded-box z-[1] w-52 p-2 shadow-md">
           <router-link to="/user" @click="handleUserManageClick">
             <li><a class="hover:bg-gray-300 active:bg-gray-400">User Manage</a></li>
@@ -17,12 +17,12 @@
 
     <!-- Center Logo/Title -->
     <div class="flex-1 text-center">
-      <a class="btn btn-ghost text-2xl font-semibold text-white hover:bg-green-600 rounded-lg transition-all">IHaveGAY</a>
+      <a class="btn btn-ghost text-xl font-semibold text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all">IHAVEGAY</a>
     </div>
 
     <!-- Right Side Icon/Button -->
     <div class="flex-none">
-      <button class="btn btn-square btn-ghost hover:bg-green-600 rounded-lg transition-all">
+      <button class="btn btn-square btn-ghost hover:bg-dark-blue rounded-lg transition-all">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

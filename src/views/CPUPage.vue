@@ -25,7 +25,7 @@
         <!-- Action Buttons -->
         <div class="flex justify-between mt-3">
           <button @click="editCpu(cpu)" class="px-3 py-1 bg-blue-500 text-white rounded">Edit</button>
-          <button @click="deleteCpu(cpu._id)" class="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
+          <button @click="deleteCpu(cpu.id)" class="px-3 py-1 bg-red-500 text-white rounded">Delete</button>
         </div>
       </div>
     </div>
@@ -82,52 +82,23 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
   data() {
     return {
-      cpuData: [], // Store the fetched CPU data
-      selectedCpu: null, // Store the selected CPU for editing
-      showAddModal: false, // Control add modal visibility
-      searchQuery: "", // Search input field
-      newCpu: {
-        title: "",
-        price: "",
-        socket: "",
-        brand: "",
-        imgUrl: "",
-      },
+      rams: [],
     };
   },
-  computed: {
-    filteredCpuData() {
-      return this.cpuData.filter(cpu =>
-        (cpu.title?.toLowerCase() || "").includes(this.searchQuery.toLowerCase()) ||
-        (cpu.brand?.toLowerCase() || "").includes(this.searchQuery.toLowerCase()) ||
-        (cpu.socket?.toLowerCase() || "").includes(this.searchQuery.toLowerCase())
-      );
-    },
+  async created() {
+    try {
+      const response = await axios.get('http://127.0.0.1:8000/Rams');
+      console.log(response.data); // Check what data you are getting
+      this.rams = response.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   },
-  mounted() {
-    this.fetchCpuData();
-  },
-  methods: {
-    // Fetch all CPU data
-    async fetchCpuData() {
-      try {
-        const response = await axios.get("http://localhost:3000/api/cpu");
-        this.cpuData = response.data.data;
-      } catch (error) {
-        console.error("Error fetching the data:", error);
-      }
-    },
-
-    // Open Edit Modal
-    editCpu(cpu) {
-      this.selectedCpu = { ...cpu };
-    },
-
     // Update CPU
     async updateCpu() {
       try {
@@ -163,7 +134,6 @@ export default {
       } catch (error) {
         console.error("Error adding CPU:", error);
       }
-    },
   },
 };
 </script>
