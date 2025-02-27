@@ -1,7 +1,36 @@
 <template>
   <div>
+    <!-- Search and Add Section -->
+    <div class="controls-container">
+      <div class="search-container">
+        <div class="search-wrapper">
+          <input 
+            type="text" 
+            v-model="searchQuery" 
+            placeholder="Search by name, brand, or memory type..." 
+            class="search-input"
+            @input="searchRams"
+          />
+          <div class="search-filters">
+            <label class="filter-label">
+              <input type="checkbox" v-model="searchFilters.title" @change="searchRams"> Name
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" v-model="searchFilters.brand" @change="searchRams"> Brand
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" v-model="searchFilters.memory_type" @change="searchRams"> Memory Type
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="add-button-container">
+        <button @click="showAddModal = true" class="add-button">Add RAM</button>
+      </div>
+    </div>
+
     <!-- Edit Modal -->
-    <div v-if="showEditModal" class="edit-modal">
+    <div v-if="showEditModal" class="modal-overlay">
       <div class="modal-content">
         <h2>Edit RAM</h2>
         <form @submit.prevent="updateRam">
@@ -17,12 +46,7 @@
           
           <div class="form-group">
             <label for="price">Price:</label>
-            <input type="number" id="price" v-model="editedRam.price" step="0.01" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="socket">Socket:</label>
-            <input type="text" id="socket" v-model="editedRam.Socket" required>
+            <input type="number" id="price" v-model="editedRam.price" required>
           </div>
           
           <div class="form-group">
@@ -34,6 +58,16 @@
             <label for="speed">Speed:</label>
             <input type="text" id="speed" v-model="editedRam.speed" required>
           </div>
+
+          <div class="form-group">
+            <label for="imgUrl">number of DIMMs</label>
+            <input type="text" id="imgUrl" v-model="editRam.imgUrl" required>
+          </div>
+
+          <div class="form-group">
+            <label for="speed">capacity per DIMM</label>
+            <input type="text" id="capacity_per_DIMM" v-model="editRam.capacity_per_DIMM" required>
+          </div>
           
           <div class="form-group">
             <label for="imgUrl">Image URL:</label>
@@ -41,30 +75,86 @@
           </div>
           
           <div class="modal-buttons">
-            <button type="submit" class="save-button">Save Changes</button>
-            <button type="button" @click="cancelEdit" class="cancel-button">Cancel</button>
+            <button type="button" @click="showEditModal = false" class="cancel-button">Cancel</button>
+            <button type="submit" class="submit-button">Submit</button>
           </div>
         </form>
       </div>
     </div>
 
+    <!-- RAM Cards Display -->
     <div class="ram-container mt-5">
-      <div v-if="!rams.length">Loading...</div>
+      <div v-if="loading">Loading...</div>
       <div v-else-if="error">{{ error }}</div>
-      <div v-for="ram in rams" :key="ram.ram_id" class="ram-card">
+      <div v-else-if="filteredRams.length === 0" class="no-results">
+        No RAMs found matching your search criteria
+      </div>
+      <div v-for="ram in filteredRams" :key="ram.ram_id" class="ram-card">
         <img :src="ram.imgUrl" alt="RAM Image" class="ram-image"/>
         <h2>{{ ram.title }}</h2>
+        <p><strong>ID:</strong> {{ ram.ram_id }}</p>
         <p><strong>Brand:</strong> {{ ram.brand }}</p>
-        <p><strong>Price:</strong> ${{ ram.price }}</p>
+        <p><strong>Price:</strong> {{ ram.price }}฿</p>
         <p><strong>Socket:</strong> {{ ram.Socket }}</p>
         <p><strong>Memory Type:</strong> {{ ram.memory_type }}</p>
+        <p><strong>number of DIMMs:</strong> {{ ram.number_of_DIMMs }}</p>
+        <p><strong>capacity_per_DIMM (GB):</strong> {{ ram.capacity_per_DIMM }}</p>
+        
         <p><strong>Speed:</strong> {{ ram.speed }}</p>
 
-        <!-- Edit and Delete Buttons on the same level -->
-        <div class="button-container mt-auto">
-          <button @click="editRam(ram)" class="edit-btn" aria-label="Edit RAM">Edit</button>
-          <button @click="deleteRam(ram.ram_id)" class="delete-btn" aria-label="Delete RAM">Delete</button>
+        <!-- Edit and Delete Buttons -->
+        <div class="edit-button">
+          <button @click="editRam(ram.ram_id)" aria-label="Edit RAM">Edit</button>
         </div>
+
+        <div class="delete-button">
+          <button @click="deleteRam(ram.ram_id)" aria-label="Delete RAM">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add RAM Modal -->
+    <div v-if="showAddModal" class="modal-overlay">
+      <div class="modal-content">
+        <h2>Add New RAM</h2>
+        <form @submit.prevent="addRam">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" v-model="newRam.title" required>
+          </div>
+          <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" id="brand" v-model="newRam.brand" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Price (฿)</label>
+            <input type="number" id="price" v-model="newRam.price" required>
+          </div>
+          <div class="form-group">
+            <label for="memory_type">Memory Type</label>
+            <input type="text" id="memory_type" v-model="newRam.memory_type" required>
+          </div>
+          <div class="form-group">
+            <label for="speed">Speed</label>
+            <input type="text" id="speed" v-model="newRam.speed" required>
+          </div>
+          <div class="form-group">
+            <label for="speed">number of DIMMs</label>
+            <input type="text" id="number_of_DIMMs" v-model="newRam.number_of_DIMMs" required>
+          </div>
+          <div class="form-group">
+            <label for="speed">capacity per DIMM</label>
+            <input type="text" id="capacity_per_DIMM" v-model="newRam.capacity_per_DIMM" required>
+          </div>
+          <div class="form-group">
+            <label for="imgUrl">Image URL</label>
+            <input type="text" id="imgUrl" v-model="newRam.imgUrl" required>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" @click="showAddModal = false" class="cancel-button">Cancel</button>
+            <button type="submit" class="submit-button">Add RAM</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -77,86 +167,159 @@ export default {
   data() {
     return {
       rams: [],
+      filteredRams: [],
+      searchQuery: '',
+      searchFilters: {
+        title: true,
+        brand: true,
+        memory_type: true,
+      },
+      loading: true,
       error: null,
+      showAddModal: false,
+      newRam: {
+        title: '',
+        brand: '',
+        price: '',
+        memory_type: '',
+        speed: '',
+        number_of_DIMMs: '',
+        capacity_per_DIMM: '',
+        imgUrl: ''
+      },
       showEditModal: false,
       editedRam: {
-        ram_id: null,
+        ram_id:'',
         title: '',
         brand: '',
-        price: 0,
+        price: null,
         Socket: '',
         memory_type: '',
         speed: '',
+        number_of_DIMMs: '',
+        capacity_per_DIMM: '',
         imgUrl: ''
-      }
+    },
     };
   },
+
   async created() {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/Rams');
-      console.log(response.data); // Check what data you are getting
-      this.rams = response.data;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      this.error = 'Failed to load RAM data. Please try again later.';
-    }
+    await this.fetchRamData();
   },
+
   methods: {
-    editRam(ram) {
-      // Create a deep copy of the RAM object to avoid direct mutation
-      this.editedRam = { ...ram };
-      this.showEditModal = true;
-    },
-    
-    async updateRam() {
+    async fetchRamData() {
       try {
-        // Send updated RAM data to the server
-        const response = await axios.put(
-          `http://127.0.0.1:8000/Rams/${this.editedRam.ram_id}`,
-          this.editedRam
-        );
-        
-        // Update the RAM in the local array
-        const index = this.rams.findIndex(ram => ram.ram_id === this.editedRam.ram_id);
-        if (index !== -1) {
-          this.rams[index] = response.data || this.editedRam;
-        }
-        
-        // Close the modal
-        this.showEditModal = false;
-        
-        // Optional: Show success message
-        alert('RAM updated successfully!');
+        this.loading = true;
+        const response = await axios.get('http://127.0.0.1:8000/Rams');
+        this.rams = response.data;
+        this.filteredRams = [...this.rams];
+        this.loading = false;
       } catch (error) {
-        console.error('Error updating RAM:', error);
-        alert('Failed to update RAM. Please try again.');
+        console.error('Error fetching RAM data:', error);
+        this.error = 'Failed to load RAM data. Please try again.';
+        this.loading = false;
+      }
+    },
+
+    async fetchRamById(ramId) {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/Rams/${ramId}`);
+        return response.data; // Return the RAM data
+      } catch (error) {
+        console.error('Error fetching RAM data:', error);
+        alert('Failed to fetch RAM data. Please try again.');
+        return null; // Return null in case of an error
+      }
+    },
+
+    searchRams() {
+      const query = this.searchQuery.toLowerCase().trim();
+      
+      if (!query) {
+        this.filteredRams = [...this.rams];
+        return;
+      }
+      
+      this.filteredRams = this.rams.filter(ram => {
+        const titleMatch = this.searchFilters.title && ram.title && ram.title.toLowerCase().includes(query);
+        const brandMatch = this.searchFilters.brand && ram.brand && ram.brand.toLowerCase().includes(query);
+        const memoryTypeMatch = this.searchFilters.memory_type && ram.memory_type && ram.memory_type.toLowerCase().includes(query);
+        
+        return titleMatch || brandMatch || memoryTypeMatch;
+      });
+    },
+
+    generateRamId() {
+      return this.rams.length > 0 
+        ? Math.max(...this.rams.map(ram => ram.ram_id)) + 1 
+        : 20001; // Start with 20001 if there are no RAMs
+    },
+
+    async addRam() {
+      try {
+        // Generate a unique ID for the new RAM
+        const ram_id = this.generateRamId();
+        
+        // Add the ID to the new RAM object
+        const ramData = { 
+          ...this.newRam,
+          ram_id 
+        };
+        
+        // Send to server
+        await axios.post("http://127.0.0.1:8000/Rams", ramData);
+        
+        // Reset form and close modal
+        this.showAddModal = false;
+        
+        // Refresh data from server
+        await this.fetchRamData();
+        
+        // Reset form data
+        this.newRam = {
+          title: '',
+          brand: '',
+          price: '',
+          memory_type: '',
+          speed: '',
+          number_of_DIMMs: '',
+          capacity_per_DIMM: '',
+          imgUrl: ''
+        };
+      } catch (error) {
+        console.error("Error adding RAM:", error);
+        alert("Failed to add RAM. Please try again.");
       }
     },
     
-    cancelEdit() {
-      this.showEditModal = false;
-      this.editedRam = {
-        ram_id: null,
-        title: '',
-        brand: '',
-        price: 0,
-        Socket: '',
-        memory_type: '',
-        speed: '',
-        imgUrl: ''
-      };
+    async editRam(ramId) {
+      this.showEditModal = true;
+      // Fetch the RAM data using the ramId and set it to editedRam
+      const ramData = await this.fetchRamById(ramId);
+      this.editedRam = { ...ramData }; // Populate the editedRam object
     },
-    
+
+    async updateRam() {
+      try {
+        const response = await axios.(`/Rams/${this.editedRam.ram_id}`, this.editedRam);
+        console.log('RAM updated successfully:', response.data);
+        this.showEditModal = false; // Close the modal
+        // Optionally refresh the RAM list or update the state
+      } catch (error) {
+        console.error('Error updating RAM:', error);
+        alert('Failed to update RAM. Please try again.'); // Provide user feedback
+      }
+    },
+
     async deleteRam(ramId) {
-      if (confirm('Are you sure you want to delete this RAM?')) {
+      if (confirm("Are you sure you want to delete this RAM?")) {
         try {
           await axios.delete(`http://127.0.0.1:8000/Rams/${ramId}`);
-          // Remove the deleted RAM from the local array
-          this.rams = this.rams.filter(ram => ram.ram_id !== ramId);
-          alert('RAM deleted successfully!');
+          await this.fetchRamData();
         } catch (error) {
-          console.error('Error deleting RAM:', error);
-          alert('Failed to delete RAM. Please try again.');
+          console.error("Error deleting RAM:", error);
+          alert("Failed to delete RAM. Please try again.");
         }
       }
     }
@@ -165,6 +328,69 @@ export default {
 </script>
 
 <style scoped>
+.controls-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding: 0 10px;
+}
+
+.search-container {
+  flex: 1;
+  max-width: 500px;
+}
+
+.search-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.search-filters {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.filter-label input {
+  margin-right: 5px;
+}
+
+.add-button-container {
+  margin-left: 20px;
+}
+
+.add-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
 .ram-container {
   display: flex;
   flex-wrap: wrap;
@@ -173,14 +399,19 @@ export default {
   justify-content: center;
 }
 
+.no-results {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+  color: #666;
+  width: 100%;
+}
+
 .ram-card {
-  display: flex;
-  flex-direction: column; /* Ensure items are stacked vertically */
-  justify-content: space-between; /* Space out the content */
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px;
-  width: 200px;
+  width: 300px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -191,66 +422,57 @@ export default {
   border-radius: 4px;
 }
 
-/* Improved button container */
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  gap: 10px;
-}
-
-.edit-btn {
+.edit-button button {
   background-color: #69d465;
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 5px 15px;
+  padding: 1px 7px;
   cursor: pointer;
   font-size: 14px;
-  flex: 1;
   transition: background-color 0.3s;
 }
 
-.edit-btn:hover {
+.edit-button button:hover {
   background-color: #0b852f;
 }
 
-.delete-btn {
+.delete-button button {
   background-color: #e75643;
   color: white;
   border: none;
   border-radius: 5px;
-  padding: 5px 15px;
+  padding: 1px 7px;
   cursor: pointer;
   font-size: 14px;
-  flex: 1;
+  margin-top: 10px;
   transition: background-color 0.3s;
 }
 
-.delete-btn:hover {
+.delete-button button:hover {
   background-color: #991f0f;
 }
 
 /* Modal Styles */
-.edit-modal {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .modal-content {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
+  width: 500px;
+  max-width: 90%;
   max-height: 90vh;
   overflow-y: auto;
 }
@@ -268,39 +490,42 @@ export default {
 .form-group input {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 10px;
   margin-top: 20px;
 }
 
-.save-button {
+.cancel-button {
+  background-color: #e75643;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+  background-color: #991f0f;
+}
+
+.submit-button {
   background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 8px 16px;
+  padding: 8px 15px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.save-button:hover {
+.submit-button:hover {
   background-color: #45a049;
-}
-
-.cancel-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.cancel-button:hover {
-  background-color: #d32f2f;
 }
 </style>
