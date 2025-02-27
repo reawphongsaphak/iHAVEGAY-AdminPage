@@ -302,7 +302,7 @@ export default {
 
     async updateRam() {
       try {
-        const response = await axios.(`/Rams/${this.editedRam.ram_id}`, this.editedRam);
+        const response = await axios(`/Rams/${this.editedRam.ram_id}`, this.editedRam);
         console.log('RAM updated successfully:', response.data);
         this.showEditModal = false; // Close the modal
         // Optionally refresh the RAM list or update the state
