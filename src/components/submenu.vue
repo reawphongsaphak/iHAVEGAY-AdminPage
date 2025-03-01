@@ -48,12 +48,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import dashboard from './dashboard.vue'
 
-// Get router instance
+// Get router and route instances
 const router = useRouter()
+const route = useRoute()
 
 // List of items with icons
 const menuItems = ref([
@@ -75,6 +76,19 @@ const toggleDropdown = () => {
   isOpen.value = !isOpen.value
 }
 
+// Data fetching function
+const fetchData = async (category) => {
+  try {
+    console.log(`Fetching data for category: ${category}`)
+    // Replace this with your actual API call
+    // const response = await fetch(`/api/products/${category}`)
+    // const data = await response.json()
+    // Process your data here
+  } catch (error) {
+    console.error('Error fetching data:', error)
+  }
+}
+
 // Navigation function
 const navigateTo = (item) => {
   // Close the dropdown
@@ -91,6 +105,17 @@ const handleClickOutside = (event) => {
   }
 }
 
+// Watch for route changes to fetch data
+watch(
+  () => route.path,
+  (newPath) => {
+    const category = newPath.substring(1) // Remove the leading slash
+    if (category) {
+      fetchData(category)
+    }
+  }
+)
+
 // Add and remove event listeners
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
@@ -99,6 +124,12 @@ onMounted(() => {
   link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons'
   link.rel = 'stylesheet'
   document.head.appendChild(link)
+  
+  // Initial data fetch based on current route
+  const initialCategory = route.path.substring(1)
+  if (initialCategory) {
+    fetchData(initialCategory)
+  }
 })
 
 onUnmounted(() => {

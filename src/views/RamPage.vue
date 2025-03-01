@@ -25,7 +25,7 @@
         </div>
       </div>
       <div class="add-button-container">
-        <button @click="showAddModal = true" class="add-button">Add RAM</button>
+        <button @click="showAddModal = true" class="add-button"> + </button>
       </div>
     </div>
 
@@ -60,18 +60,18 @@
           </div>
 
           <div class="form-group">
-            <label for="imgUrl">number of DIMMs</label>
-            <input type="text" id="imgUrl" v-model="editRam.imgUrl" required>
+            <label for="number_of_DIMMs">Number of DIMMs:</label>
+            <input type="text" id="number_of_DIMMs" v-model="editedRam.number_of_DIMMs" required>
           </div>
 
           <div class="form-group">
-            <label for="speed">capacity per DIMM</label>
-            <input type="text" id="capacity_per_DIMM" v-model="editRam.capacity_per_DIMM" required>
+            <label for="capacity_per_DIMM">Capacity per DIMM (GB):</label>
+            <input type="text" id="capacity_per_DIMM" v-model="editedRam.capacity_per_DIMM" required>
           </div>
           
           <div class="form-group">
             <label for="imgUrl">Image URL:</label>
-            <input type="text" id="imgUrl" v-model="editedRam.imgUrl">
+            <input type="text" id="imgUrl" v-model="editedRam.imgUrl" required>
           </div>
           
           <div class="modal-buttons">
@@ -95,20 +95,15 @@
         <p><strong>ID:</strong> {{ ram.ram_id }}</p>
         <p><strong>Brand:</strong> {{ ram.brand }}</p>
         <p><strong>Price:</strong> {{ ram.price }}฿</p>
-        <p><strong>Socket:</strong> {{ ram.Socket }}</p>
         <p><strong>Memory Type:</strong> {{ ram.memory_type }}</p>
-        <p><strong>number of DIMMs:</strong> {{ ram.number_of_DIMMs }}</p>
-        <p><strong>capacity_per_DIMM (GB):</strong> {{ ram.capacity_per_DIMM }}</p>
-        
+        <p><strong>Number of DIMMs:</strong> {{ ram.number_of_DIMMs }}</p>
+        <p><strong>Capacity per DIMM (GB):</strong> {{ ram.capacity_per_DIMM }}</p>
         <p><strong>Speed:</strong> {{ ram.speed }}</p>
 
         <!-- Edit and Delete Buttons -->
-        <div class="edit-button">
-          <button @click="editRam(ram.ram_id)" aria-label="Edit RAM">Edit</button>
-        </div>
-
-        <div class="delete-button">
-          <button @click="deleteRam(ram.ram_id)" aria-label="Delete RAM">Delete</button>
+        <div class="del-edit-botton-container">
+            <button @click="editRam(ram.ram_id)" class="edit-button" aria-label="Edit RAM">Edit</button>
+            <button @click="deleteRam(ram.ram_id)" class="delete-button" aria-label="Delete RAM">Delete</button>
         </div>
       </div>
     </div>
@@ -139,11 +134,11 @@
             <input type="text" id="speed" v-model="newRam.speed" required>
           </div>
           <div class="form-group">
-            <label for="speed">number of DIMMs</label>
+            <label for="number_of_DIMMs">Number of DIMMs</label>
             <input type="text" id="number_of_DIMMs" v-model="newRam.number_of_DIMMs" required>
           </div>
           <div class="form-group">
-            <label for="speed">capacity per DIMM</label>
+            <label for="capacity_per_DIMM">Capacity per DIMM</label>
             <input type="text" id="capacity_per_DIMM" v-model="newRam.capacity_per_DIMM" required>
           </div>
           <div class="form-group">
@@ -189,17 +184,16 @@ export default {
       },
       showEditModal: false,
       editedRam: {
-        ram_id:'',
+        ram_id: '',
         title: '',
         brand: '',
         price: null,
-        Socket: '',
         memory_type: '',
         speed: '',
         number_of_DIMMs: '',
         capacity_per_DIMM: '',
         imgUrl: ''
-    },
+      },
     };
   },
 
@@ -251,9 +245,13 @@ export default {
     },
 
     generateRamId() {
-      return this.rams.length > 0 
-        ? Math.max(...this.rams.map(ram => ram.ram_id)) + 1 
-        : 20001; // Start with 20001 if there are no RAMs
+      const existingIds = this.rams.map(ram => ram.ram_id);
+      for (let i = 20001; i <= 29999; i++) {
+        if (!existingIds.includes(i)) {
+          return i; // Return the first missing id in the range
+        }
+      }
+      throw new Error('No available Ram ID in the range 20001-29999');
     },
 
     async addRam() {
@@ -297,15 +295,21 @@ export default {
       this.showEditModal = true;
       // Fetch the RAM data using the ramId and set it to editedRam
       const ramData = await this.fetchRamById(ramId);
-      this.editedRam = { ...ramData }; // Populate the editedRam object
+      if (ramData) {
+        this.editedRam = { ...ramData }; // Populate the editedRam object
+      }
     },
 
     async updateRam() {
       try {
-        const response = await axios(`/Rams/${this.editedRam.ram_id}`, this.editedRam);
+        // Use PUT method to update the RAM data
+        const response = await axios.patch(
+          `http://127.0.0.1:8000/Rams/${this.editedRam.ram_id}`, 
+          this.editedRam
+        );
         console.log('RAM updated successfully:', response.data);
         this.showEditModal = false; // Close the modal
-        // Optionally refresh the RAM list or update the state
+        await this.fetchRamData(); // Refresh the RAM list
       } catch (error) {
         console.error('Error updating RAM:', error);
         alert('Failed to update RAM. Please try again.'); // Provide user feedback
@@ -337,6 +341,7 @@ export default {
 }
 
 .search-container {
+  margin-top: 10px;
   flex: 1;
   max-width: 500px;
 }
@@ -372,11 +377,8 @@ export default {
   margin-right: 5px;
 }
 
-.add-button-container {
-  margin-left: 20px;
-}
-
 .add-button {
+  margin-top: 10px;
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -422,35 +424,31 @@ export default {
   border-radius: 4px;
 }
 
-.edit-button button {
-  background-color: #69d465;
-  color: white;
+.del-edit-botton-container{
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+}
+
+/* Button Styling */
+button {
+  padding: 8px 16px;
   border: none;
-  border-radius: 5px;
-  padding: 1px 7px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  flex: 1;
+  margin: 0 4px;
 }
 
-.edit-button button:hover {
-  background-color: #0b852f;
-}
-
-.delete-button button {
-  background-color: #e75643;
+.edit-button {
+  background-color: #4CAF50;
   color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 1px 7px;
-  cursor: pointer;
-  font-size: 14px;
-  margin-top: 10px;
-  transition: background-color 0.3s;
 }
 
-.delete-button button:hover {
-  background-color: #991f0f;
+.delete-button {
+  background-color: #dc3545;
+  color: white;
 }
 
 /* Modal Styles */
@@ -502,7 +500,7 @@ export default {
 }
 
 .cancel-button {
-  background-color: #e75643;
+  background-color: #dc3545;
   color: white;
   border: none;
   border-radius: 4px;
