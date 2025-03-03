@@ -268,7 +268,7 @@ export default {
       newCpu: {
         title: "",
         price: "",
-        Socket: "", // Fixed case to match property used elsewhere
+        Socket: "",
         brand: "",
         imgUrl: "",
       },
