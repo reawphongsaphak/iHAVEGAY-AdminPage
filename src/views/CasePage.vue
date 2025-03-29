@@ -57,7 +57,12 @@
               </div>
               <button type="button" @click="addEditSupportMB" class="add-more-button">+ Add More</button>
             </div>
-            
+
+            <div class="form-group">
+              <label for="quantity">Qauantity:</label>
+              <input type="number" id="quantity" v-model="editedCase.quantity" required>
+            </div>
+
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
               <input type="text" id="imgUrl" v-model="editedCase.imgUrl" required>
@@ -84,11 +89,11 @@
           <p><strong>ID:</strong> {{ Case.case_id }}</p>
           <p><strong>Brand:</strong> {{ Case.brand }}</p>
           <p><strong>Price:</strong> {{ Case.price }} ฿</p>
-          <p><strong>Supported Motherboards: </strong> 
+          <p><strong>Supported Motherboards: </strong>\
             <span v-if="Array.isArray(Case.support_mb)">{{ Case.support_mb.join(", ") }}</span>
             <span v-else>{{ Case.support_mb }}</span>
           </p>
-  
+          <p><strong>Quantity:</strong> {{ Case.quantity }}</p>
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
               <button @click="editCase(Case.case_id)" class="edit-button" aria-label="Edit Case">Edit</button>
@@ -110,6 +115,7 @@
               <label for="brand">Brand</label>
               <input type="text" id="brand" v-model="newCase.brand" required>
             </div>
+
             <div class="form-group">
               <label for="price">Price (฿)</label>
               <input type="number" id="price" v-model="newCase.price" required>
@@ -123,6 +129,12 @@
               </div>
               <button type="button" @click="addSupportMB" class="add-more-button">+ Add More</button>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newCase.quantity" required>
+            </div>
+
             <div class="form-group">
               <label for="imgUrl">Image URL</label>
               <input type="text" id="imgUrl" v-model="newCase.imgUrl" required>
@@ -158,6 +170,7 @@
             title: '',
             brand: '',
             price: '',
+            quantity:'',
             support_mb: [''],
             imgUrl: ''
         },
@@ -167,6 +180,7 @@
             title: '',
             brand: '',
             price: '',
+            quantity: '',
             support_mb: [''],
             imgUrl: ''
         }
@@ -181,7 +195,7 @@
       async fetchCaseData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/Cases');
+          const response = await axios.get('https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases');
           this.Cases = response.data;
           this.filteredCases = [...this.Cases];
           this.loading = false;
@@ -195,7 +209,7 @@
       async fetchCaseById(caseId) {
         console.log('Fetching case with caseId:', caseId);
         try {
-            const response = await axios.get(`http://127.0.0.1:8000/Cases/${caseId}`);
+            const response = await axios.get(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${caseId}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching Case data:', error);
@@ -291,13 +305,14 @@
               brand: this.newCase.brand,
               price,
               case_id,
+              quantity: this.newCase.quantity,
               support_mb: supportMb,
               imgUrl: this.newCase.imgUrl
             };
             
             console.log('Sending new case data:', caseData);
             
-            await axios.post("http://127.0.0.1:8000/Cases", caseData);
+            await axios.post("https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases", caseData);
             
             this.showAddModal = false;
             await this.fetchCaseData();
@@ -306,6 +321,7 @@
               title: '',
               brand: '',
               price: '',
+              quantity:'',
               support_mb: [''],
               imgUrl: ''
             };
@@ -372,6 +388,7 @@
               title: this.editedCase.title,
               brand: this.editedCase.brand,
               price,
+              quantity: this.editedCase.quantity,
               support_mb: supportMb,
               imgUrl: this.editedCase.imgUrl
             };
@@ -379,7 +396,7 @@
             // Log what we're about to send
             console.log('Sending update data:', updatedCase);
   
-            await axios.patch(`http://127.0.0.1:8000/Cases/${this.editedCase.case_id}`, updatedCase);
+            await axios.patch(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${this.editedCase.case_id}`, updatedCase);
             this.showEditModal = false;
             await this.fetchCaseData();
         } catch (error) {
@@ -395,7 +412,7 @@
       async deleteCase(caseId) {
         if (confirm("Are you sure you want to delete this Case?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/Cases/${caseId}`);
+            await axios.delete(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${caseId}`);
             await this.fetchCaseData();
           } catch (error) {
             console.error("Error deleting Case:", error);

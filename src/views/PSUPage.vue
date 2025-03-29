@@ -55,6 +55,11 @@
               <label for="certs">Certificate:</label>
               <input type="text" id="certs" v-model="editedPSU.certs" required>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" v-model="editedPSU.quantity" required>
+            </div>
             
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
@@ -84,6 +89,7 @@
           <p><strong>Price:</strong> {{ PSU.price }} ฿</p>
           <p><strong>Max watt:</strong> {{ PSU.Max_Watt }} </p>
           <p><strong>Certificate:</strong> {{ PSU.certs }} </p>
+          <p><strong>Quantity:</strong> {{ PSU.quantity }} </p>
   
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
@@ -117,6 +123,10 @@
             <div class="form-group">
               <label for="certs">Certificate</label>
               <input type="text" id="certs" v-model="newPSU.certs" required>
+            </div>
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newPSU.quantity" required>
             </div>
             <div class="form-group">
               <label for="imgUrl">Image URL</label>
@@ -155,6 +165,7 @@
             price: null,
             Max_Watt: null,
             certs: '',
+            quantity:'',
             imgUrl: ''
         },
         showEditModal: false,
@@ -165,6 +176,7 @@
             price: null,
             Max_Watt: null,
             certs: '',
+            quantity:'',
             imgUrl: ''
         },
       };
@@ -178,7 +190,7 @@
       async fetchPSUData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/PSUs');
+          const response = await axios.get('http://127.0.0.1:8888/api/v1/PSUs/');
           this.PSUs = response.data;
           this.filteredPSUs = [...this.PSUs];
           this.loading = false;
@@ -191,7 +203,7 @@
   
       async fetchPSUById(PSUId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/PSUs/${PSUId}`);
+          const response = await axios.get(`http://127.0.0.1:8888/api/v1/PSUs/${PSUId}`);
           return response.data; // Return the PSU data
         } catch (error) {
           console.error('Error fetching PSU data:', error);
@@ -240,7 +252,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8000/PSUs", PSUData);
+          await axios.post("http://127.0.0.1:8888/api/v1/PSUs/", PSUData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -255,6 +267,7 @@
             price: '',
             Max_Watt: '',
             certs: '',
+            quantity:'',
             imgUrl: ''
           };
         } catch (error) {
@@ -292,13 +305,14 @@
             price: Number(this.editedPSU.price),
             Max_Watt: Number(this.editedPSU.Max_Watt),
             certs: this.editedPSU.certs,
+            quantity: this.editedPSU.quantity,
             imgUrl: this.editedPSU.imgUrl
             };
             
             console.log('Sending update with data:', updateData);
 
             const response = await axios.patch(
-            `http://127.0.0.1:8000/PSUs/${this.editedPSU.psu_id}`, updateData);
+            `http://127.0.0.1:8888/api/v1/PSUs/${this.editedPSU.psu_id}`, updateData);
 
             console.log('PSU updated successfully:', response.data);
             this.showEditModal = false; // Close the modal
@@ -313,7 +327,7 @@
       async deletePSU(PSUId) {
         if (confirm("Are you sure you want to delete this PSU?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/PSUs/${PSUId}`);
+            await axios.delete(`http://127.0.0.1:8888/api/v1/PSUs/${PSUId}`);
             await this.fetchPSUData();
           } catch (error) {
             console.error("Error deleting PSU:", error);

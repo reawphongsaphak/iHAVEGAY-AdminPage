@@ -66,6 +66,11 @@
               <label for="size">Size:</label>
               <input type="text" id="size" v-model="editedmainboard.size" required>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" v-model="editedmainboard.quantity" required>
+            </div>
             
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
@@ -96,6 +101,7 @@
           <p><strong>Memory type:</strong> {{ mainboard.memory_type }}</p>
           <p><strong>Size:</strong> {{ mainboard.size }}</p>
           <p><strong>Socket:</strong> {{ mainboard.socket }}</p>
+          <p><strong>Quantity:</strong> {{ mainboard.quantity }}</p>
   
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
@@ -135,6 +141,10 @@
               <input type="text" id="size" v-model="newmainboard.size" required>
             </div>
             <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newmainboard.quantity" required>
+            </div>
+            <div class="form-group">
               <label for="imgUrl">Image URL</label>
               <input type="text" id="imgUrl" v-model="newmainboard.imgUrl" required>
             </div>
@@ -172,6 +182,7 @@
           socket: '',
           memory_type: '',
           size: '',
+          quantity:'',
           imgUrl: ''
         },
         showEditModal: false,
@@ -183,6 +194,7 @@
           socket: '',
           memory_type: '',
           size: '',
+          quantity:'',
           imgUrl: ''
         },
       };
@@ -196,7 +208,7 @@
       async fetchmainboardData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/Mainboards');
+          const response = await axios.get('http://127.0.0.1:8888/api/v1/mainboards/');
           this.mainboards = response.data;
           this.filteredmainboards = [...this.mainboards];
           this.loading = false;
@@ -209,7 +221,7 @@
   
       async fetchmainboardById(mainboardId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/Mainboards/${mainboardId}`);
+          const response = await axios.get(`http://127.0.0.1:8888/api/v1/mainboards/${mainboardId}`);
           return response.data; // Return the mainboard data
         } catch (error) {
           console.error('Error fetching mainboard data:', error);
@@ -258,7 +270,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8000/Mainboards", mainboardData);
+          await axios.post("http://127.0.0.1:8888/api/v1/mainboards/", mainboardData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -274,6 +286,7 @@
             socket: '',
             memory_type: '',
             size: '',
+            quantity:'',
             imgUrl: ''
           };
         } catch (error) {
@@ -294,7 +307,7 @@
       async updatemainboard() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8000/Mainboards/${this.editedmainboard.mainboard_id}`, 
+            `http://127.0.0.1:8888/api/v1/mainboards/${this.editedmainboard.mainboard_id}`, 
             this.editedmainboard
           );
           console.log('mainboard updated successfully:', response.data);
@@ -309,7 +322,7 @@
       async deletemainboard(mainboardId) {
         if (confirm("Are you sure you want to delete this mainboard?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/Mainboards/${mainboardId}`);
+            await axios.delete(`http://127.0.0.1:8888/api/v1/mainboards/${mainboardId}`);
             await this.fetchmainboardData();
           } catch (error) {
             console.error("Error deleting mainboard:", error);

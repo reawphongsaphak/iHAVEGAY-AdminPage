@@ -60,6 +60,11 @@
               <label for="memory-type">Write speed:</label>
               <input type="text" id="write" v-model="editedm2.write" required>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Write speed:</label>
+              <input type="number" id="quantity" v-model="editedm2.quantity" required>
+            </div>
             
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
@@ -90,6 +95,7 @@
           <p><strong>Read speed:</strong> {{ m2.read }}</p>
           <p><strong>Write speed:</strong> {{ m2.write }}</p>
           <p><strong>Size:</strong> {{ m2.capacity }} GB</p>
+          <p><strong>Quantity:</strong> {{ m2.quantity }}</p>
   
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
@@ -129,6 +135,10 @@
               <input type="text" id="write" v-model="newm2.write" required>
             </div>
             <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newm2.quantity" required>
+            </div>
+            <div class="form-group">
               <label for="imgUrl">Image URL</label>
               <input type="text" id="imgUrl" v-model="newm2.imgUrl" required>
             </div>
@@ -164,6 +174,7 @@
             capacity: '',
             read: '',
             write: '',
+            quantity:'',
             imgUrl: ''
         },
         showEditModal: false,
@@ -175,6 +186,7 @@
             capacity: '',
             read: '',
             write: '',
+            quantity:'',
             imgUrl: ''
         },
       };
@@ -188,7 +200,7 @@
       async fetchm2Data() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/M2s');
+          const response = await axios.get('http://127.0.0.1:8888/api/v1/storage/m2s');
           this.m2s = response.data;
           this.filteredm2s = [...this.m2s];
           this.loading = false;
@@ -201,7 +213,7 @@
   
       async fetchm2ById(m2Id) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/M2s/${m2Id}`);
+          const response = await axios.get(`http://127.0.0.1:8888/api/v1/storage/m2s/${m2Id}`);
           return response.data; // Return the m2 data
         } catch (error) {
           console.error('Error fetching m2 data:', error);
@@ -248,7 +260,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8000/M2s", m2Data);
+          await axios.post("http://127.0.0.1:8888/api/v1/storage/m2s", m2Data);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -264,6 +276,7 @@
             capacity: '',
             read: '',
             write: '',
+            quantity:'',
             imgUrl: ''
           };
         } catch (error) {
@@ -284,7 +297,7 @@
       async updatem2() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8000/M2s/${this.editedm2.m2_id}`, 
+            `http://127.0.0.1:8888/api/v1/storage/m2s/${this.editedm2.m2_id}`, 
             this.editedm2
           );
           console.log('m2 updated successfully:', response.data);
@@ -299,7 +312,7 @@
       async deletem2(m2Id) {
         if (confirm("Are you sure you want to delete this m2?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/M2s/${m2Id}`);
+            await axios.delete(`http://127.0.0.1:8888/api/v1/storage/m2s/${m2Id}`);
             await this.fetchm2Data();
           } catch (error) {
             console.error("Error deleting m2:", error);

@@ -58,11 +58,17 @@
               <label for="price">Ram capacity:</label>
               <input type="number" id="ram_capacity_GB" v-model="editedgpu.ram_capacity_GB" required>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" v-model="editedgpu.quantity" required>
+            </div>
             
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
               <input type="text" id="imgUrl" v-model="editedgpu.imgUrl" required>
             </div>
+            
             
             <div class="modal-buttons">
               <button type="button" @click="showEditModal = false" class="cancel-button">Cancel</button>
@@ -87,6 +93,7 @@
           <p><strong>Price:</strong> {{ gpu.price }} ฿</p>
           <p><strong>Ram capacity:</strong> {{ gpu.ram_capacity_GB }} GB</p>
           <p><strong>Series:</strong> {{ gpu.series }}</p>
+          <p><strong>Quantity:</strong> {{ gpu.quantity }}</p>
   
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
@@ -118,8 +125,12 @@
               <input type="text" id="series" v-model="newgpu.series" required>
             </div>
             <div class="form-group">
-              <label for="series">Ram capacity</label>
+              <label for="ram_capacity_GB">Ram capacity</label>
               <input type="number" id="ram_capacity_GB" v-model="newgpu.ram_capacity_GB" required>
+            </div>
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newgpu.quantity" required>
             </div>
             <div class="form-group">
               <label for="imgUrl">Image URL</label>
@@ -157,6 +168,7 @@
             brand: '',
             price: '',
             ram_capacity_GB: null,
+            quantity:null,
             series: '',
             imgUrl: ''
         },
@@ -167,6 +179,7 @@
             brand: '',
             price: null,
             ram_capacity_GB: null,
+            quantity:null,
             series: '',
             imgUrl: ''
         },
@@ -181,7 +194,7 @@
       async fetchgpuData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/GPUs');
+          const response = await axios.get('http://127.0.0.1:8888/api/v1/GPUs/');
           this.gpus = response.data;
           this.filteredgpus = [...this.gpus];
           this.loading = false;
@@ -194,7 +207,7 @@
   
       async fetchgpuById(gpuId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/GPUs/${gpuId}`);
+          const response = await axios.get(`http://127.0.0.1:8888/api/v1/GPUs/${gpuId}`);
           return response.data; // Return the gpu data
         } catch (error) {
           console.error('Error fetching gpu data:', error);
@@ -242,7 +255,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8000/GPUs", gpuData);
+          await axios.post("http://127.0.0.1:8888/api/v1/GPUs/", gpuData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -256,6 +269,7 @@
             brand: '',
             price: '',
             ram_capacity_GB: null,
+            quantity:null,
             series: '',
             imgUrl: ''
           };
@@ -277,7 +291,7 @@
       async updategpu() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8000/GPUs/${this.editedgpu.gpu_id}`, 
+            `http://127.0.0.1:8888/api/v1/GPUs/${this.editedgpu.gpu_id}`, 
             this.editedgpu
           );
           console.log('gpu updated successfully:', response.data);
@@ -292,7 +306,7 @@
       async deletegpu(gpuId) {
         if (confirm("Are you sure you want to delete this gpu?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/GPUs/${gpuId}`);
+            await axios.delete(`http://127.0.0.1:8888/api/v1/GPUs/${gpuId}`);
             await this.fetchgpuData();
           } catch (error) {
             console.error("Error deleting gpu:", error);

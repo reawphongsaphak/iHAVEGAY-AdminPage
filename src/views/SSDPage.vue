@@ -50,6 +50,11 @@
               <label for="size_GB">Size:</label>
               <input type="text" id="size_GB" v-model="editedssd.size_GB" required>
             </div>
+
+            <div class="form-group">
+              <label for="quantity">Quantity:</label>
+              <input type="number" id="quantity" v-model="editedssd.quantity" required>
+            </div>
             
             <div class="form-group">
               <label for="imgUrl">Image URL:</label>
@@ -78,6 +83,7 @@
           <p><strong>Brand:</strong> {{ ssd.brand }}</p>
           <p><strong>Price:</strong> {{ ssd.price }}฿</p>
           <p><strong>Size:</strong> {{ ssd.size_GB }} GB</p>
+          <p><strong>Quantity:</strong> {{ ssd.quantity }}</p>
   
           <!-- Edit and Delete Buttons -->
           <div class="del-edit-botton-container">
@@ -107,6 +113,10 @@
             <div class="form-group">
               <label for="size_GB">Size</label>
               <input type="text" id="size_GB" v-model="newssd.size_GB" required>
+            </div>
+            <div class="form-group">
+              <label for="quantity">Quantity</label>
+              <input type="number" id="quantity" v-model="newssd.quantity" required>
             </div>
             <div class="form-group">
               <label for="imgUrl">Image URL</label>
@@ -142,6 +152,7 @@
           brand: '',
           price: '',
           size_GB: '',
+          quantity:'',
           imgUrl: ''
         },
         showEditModal: false,
@@ -151,6 +162,7 @@
           brand: '',
           price: null,
           size_GB: '',
+          quantity:'',
           imgUrl: ''
         },
       };
@@ -164,7 +176,7 @@
       async fetchssdData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8000/SSDs');
+          const response = await axios.get('http://127.0.0.1:8888/api/v1/storage/ssds');
           this.ssds = response.data;
           this.filteredssds = [...this.ssds];
           this.loading = false;
@@ -177,7 +189,7 @@
   
       async fetchssdById(ssdId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/SSDs/${ssdId}`);
+          const response = await axios.get(`http://127.0.0.1:8888/api/v1/storage/ssds/${ssdId}`);
           return response.data; // Return the ssd data
         } catch (error) {
           console.error('Error fetching ssd data:', error);
@@ -224,7 +236,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8000/SSDs", ssdData);
+          await axios.post("http://127.0.0.1:8888/api/v1/storage/ssds", ssdData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -238,6 +250,7 @@
             brand: '',
             price: '',
             size_GB: '',
+            quantity:'',
             imgUrl: ''
           };
         } catch (error) {
@@ -258,7 +271,7 @@
       async updatessd() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8000/SSDs/${this.editedssd.ssd_id}`, 
+            `http://127.0.0.1:8888/api/v1/storage/ssds/${this.editedssd.ssd_id}`, 
             this.editedssd
           );
           console.log('ssd updated successfully:', response.data);
@@ -273,7 +286,7 @@
       async deletessd(ssdId) {
         if (confirm("Are you sure you want to delete this ssd?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8000/SSDs/${ssdId}`);
+            await axios.delete(`http://127.0.0.1:8888/api/v1/storage/ssds/${ssdId}`);
             await this.fetchssdData();
           } catch (error) {
             console.error("Error deleting ssd:", error);

@@ -68,6 +68,11 @@
             <label for="capacity_per_DIMM">Capacity per DIMM (GB):</label>
             <input type="text" id="capacity_per_DIMM" v-model="editedRam.capacity_per_DIMM" required>
           </div>
+
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" v-model="editedRam.quantity" required>
+          </div>
           
           <div class="form-group">
             <label for="imgUrl">Image URL:</label>
@@ -99,6 +104,7 @@
         <p><strong>Number of DIMMs:</strong> {{ ram.number_of_DIMMs }}</p>
         <p><strong>Capacity per DIMM (GB):</strong> {{ ram.capacity_per_DIMM }}</p>
         <p><strong>Speed:</strong> {{ ram.speed }}</p>
+        <p><strong>Quantity:</strong> {{ ram.quantity }}</p>
 
         <!-- Edit and Delete Buttons -->
         <div class="del-edit-botton-container">
@@ -142,6 +148,10 @@
             <input type="text" id="capacity_per_DIMM" v-model="newRam.capacity_per_DIMM" required>
           </div>
           <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" v-model="newRam.quantity" required>
+          </div>
+          <div class="form-group">
             <label for="imgUrl">Image URL</label>
             <input type="text" id="imgUrl" v-model="newRam.imgUrl" required>
           </div>
@@ -180,6 +190,7 @@ export default {
         speed: '',
         number_of_DIMMs: '',
         capacity_per_DIMM: '',
+        quantity:'',
         imgUrl: ''
       },
       showEditModal: false,
@@ -192,6 +203,7 @@ export default {
         speed: '',
         number_of_DIMMs: '',
         capacity_per_DIMM: '',
+        quantity:'',
         imgUrl: ''
       },
     };
@@ -205,7 +217,7 @@ export default {
     async fetchRamData() {
       try {
         this.loading = true;
-        const response = await axios.get('http://127.0.0.1:8000/Rams');
+        const response = await axios.get('http://127.0.0.1:8888/api/v1/RAMs/');
         this.rams = response.data;
         this.filteredRams = [...this.rams];
         this.loading = false;
@@ -218,7 +230,7 @@ export default {
 
     async fetchRamById(ramId) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/Rams/${ramId}`);
+        const response = await axios.get(`http://127.0.0.1:8888/api/v1/RAMs/${ramId}`);
         return response.data; // Return the RAM data
       } catch (error) {
         console.error('Error fetching RAM data:', error);
@@ -266,7 +278,7 @@ export default {
         };
         
         // Send to server
-        await axios.post("http://127.0.0.1:8000/Rams", ramData);
+        await axios.post("http://127.0.0.1:8888/api/v1/RAMs/", ramData);
         
         // Reset form and close modal
         this.showAddModal = false;
@@ -283,6 +295,7 @@ export default {
           speed: '',
           number_of_DIMMs: '',
           capacity_per_DIMM: '',
+          quantity:'',
           imgUrl: ''
         };
       } catch (error) {
@@ -304,7 +317,7 @@ export default {
       try {
         // Use PUT method to update the RAM data
         const response = await axios.patch(
-          `http://127.0.0.1:8000/Rams/${this.editedRam.ram_id}`, 
+          `http://127.0.0.1:8888/api/v1/RAMs/${this.editedRam.ram_id}`, 
           this.editedRam
         );
         console.log('RAM updated successfully:', response.data);
@@ -319,7 +332,7 @@ export default {
     async deleteRam(ramId) {
       if (confirm("Are you sure you want to delete this RAM?")) {
         try {
-          await axios.delete(`http://127.0.0.1:8000/Rams/${ramId}`);
+          await axios.delete(`http://127.0.0.1:8888/api/v1/RAMs/${ramId}`);
           await this.fetchRamData();
         } catch (error) {
           console.error("Error deleting RAM:", error);

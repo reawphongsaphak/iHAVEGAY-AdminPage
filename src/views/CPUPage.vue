@@ -50,8 +50,13 @@
           </div>
           
           <div class="form-group">
-            <label for="memory-type">Socket:</label>
-            <input type="text" id="memory-type" v-model="editedcpu.Socket" required>
+            <label for="Socket">Socket:</label>
+            <input type="text" id="Socket" v-model="editedcpu.Socket" required>
+          </div>
+
+          <div class="form-group">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" v-model="editedcpu.quantity" required>
           </div>
           
           <div class="form-group">
@@ -81,6 +86,7 @@
         <p><strong>Brand:</strong> {{ cpu.brand }}</p>
         <p><strong>Price:</strong> {{ cpu.price }}฿</p>
         <p><strong>Socket:</strong> {{ cpu.Socket }}</p>
+        <p><strong>Quantity:</strong> {{ cpu.quantity }}</p>
 
         <!-- Edit and Delete Buttons -->
         <div class="del-edit-botton-container">
@@ -110,6 +116,10 @@
           <div class="form-group">
             <label for="Socket">Socket</label>
             <input type="text" id="Socket" v-model="newcpu.Socket" required>
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" id="quantity" v-model="newcpu.quantity" required>
           </div>
           <div class="form-group">
             <label for="imgUrl">Image URL</label>
@@ -147,6 +157,7 @@ export default {
         brand: '',
         price: '',
         Socket: '',
+        quantity:'',
         imgUrl: ''
       },
       showEditModal: false,
@@ -156,6 +167,7 @@ export default {
         brand: '',
         price: null,
         Socket: '',
+        quantity: '',
         imgUrl: ''
       },
     };
@@ -169,7 +181,7 @@ export default {
     async fetchcpuData() {
       try {
         this.loading = true;
-        const response = await axios.get('http://127.0.0.1:8000/CPUs');
+        const response = await axios.get('https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs');
         this.cpus = response.data;
         this.filteredcpus = [...this.cpus];
         this.loading = false;
@@ -182,7 +194,7 @@ export default {
 
     async fetchcpuById(cpuId) {
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/CPUs/${cpuId}`);
+        const response = await axios.get(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${cpuId}`);
         return response.data; // Return the cpu data
       } catch (error) {
         console.error('Error fetching cpu data:', error);
@@ -230,7 +242,7 @@ export default {
         };
         
         // Send to server
-        await axios.post("http://127.0.0.1:8000/CPUs", cpuData);
+        await axios.post("https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs", cpuData);
         
         // Reset form and close modal
         this.showAddModal = false;
@@ -244,6 +256,7 @@ export default {
           brand: '',
           price: '',
           Socket: '',
+          quantity:'',
           imgUrl: ''
         };
       } catch (error) {
@@ -264,7 +277,7 @@ export default {
     async updatecpu() {
       try {
         const response = await axios.patch(
-          `http://127.0.0.1:8000/cpus/${this.editedcpu.cpu_id}`, 
+          `https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${this.editedcpu.cpu_id}`, 
           this.editedcpu
         );
         console.log('cpu updated successfully:', response.data);
@@ -279,7 +292,7 @@ export default {
     async deletecpu(cpuId) {
       if (confirm("Are you sure you want to delete this cpu?")) {
         try {
-          await axios.delete(`http://127.0.0.1:8000/CPUs/${cpuId}`);
+          await axios.delete(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${cpuId}`);
           await this.fetchcpuData();
         } catch (error) {
           console.error("Error deleting cpu:", error);
