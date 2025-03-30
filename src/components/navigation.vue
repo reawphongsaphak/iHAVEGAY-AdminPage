@@ -5,7 +5,7 @@
     <div class="flex-1 text-center">
 
       <router-link 
-        to="/dashboard"
+        to="/"
         class="btn btn-ghost text-xl font-semibold text-white hover:bg-white hover:bg-opacity-5 rounded-lg transition-all">
         IHAVEGAY
       </router-link>
