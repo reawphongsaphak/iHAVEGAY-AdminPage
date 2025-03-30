@@ -40,7 +40,7 @@ npm run lint
 
 ## Libraries
 
-- daisyui
+- [daisyui](https://daisyui.com/docs/install/)
 - [axios](https://github.com/axios/axios)
 
 
