@@ -318,7 +318,7 @@ export default {
     },
     async fetchLowStockItems() {
   try {
-    const response = await axios.get('http://localhost:8000/api/v1/admin/inventory/low-stock?limit=20');
+    const response = await axios.get('http://localhost:8000/api/v1/admin/inventory/low-stock?limit=5');
 
     if (Array.isArray(response.data)) {
       // Map API structure to your app format
@@ -326,7 +326,7 @@ export default {
         _id: item.product_id.toString(), // If needed, can generate UUID or use product_id
         productID: item.product_id.toString(),
         category: item.category,
-        quantity: item.stock_quantity
+        quantity: item.quantity
       }));
     }
   } catch (error) {
