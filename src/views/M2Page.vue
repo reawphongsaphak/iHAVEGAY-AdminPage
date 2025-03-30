@@ -200,7 +200,7 @@
       async fetchm2Data() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8888/api/v1/storage/m2s');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/storage/m2s');
           this.m2s = response.data;
           this.filteredm2s = [...this.m2s];
           this.loading = false;
@@ -213,7 +213,7 @@
   
       async fetchm2ById(m2Id) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8888/api/v1/storage/m2s/${m2Id}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/storage/m2s/${m2Id}`);
           return response.data; // Return the m2 data
         } catch (error) {
           console.error('Error fetching m2 data:', error);
@@ -260,7 +260,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8888/api/v1/storage/m2s", m2Data);
+          await axios.post("http://127.0.0.1:8000/api/v1/storage/m2s", m2Data);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -297,7 +297,7 @@
       async updatem2() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8888/api/v1/storage/m2s/${this.editedm2.m2_id}`, 
+            `http://127.0.0.1:8000/api/v1/storage/m2s/${this.editedm2.m2_id}`, 
             this.editedm2
           );
           console.log('m2 updated successfully:', response.data);
@@ -312,7 +312,7 @@
       async deletem2(m2Id) {
         if (confirm("Are you sure you want to delete this m2?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8888/api/v1/storage/m2s/${m2Id}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/storage/m2s/${m2Id}`);
             await this.fetchm2Data();
           } catch (error) {
             console.error("Error deleting m2:", error);
@@ -406,7 +406,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 585px;

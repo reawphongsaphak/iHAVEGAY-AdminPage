@@ -190,7 +190,7 @@
       async fetchPSUData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8888/api/v1/PSUs/');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/PSUs/');
           this.PSUs = response.data;
           this.filteredPSUs = [...this.PSUs];
           this.loading = false;
@@ -203,7 +203,7 @@
   
       async fetchPSUById(PSUId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8888/api/v1/PSUs/${PSUId}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/PSUs/${PSUId}`);
           return response.data; // Return the PSU data
         } catch (error) {
           console.error('Error fetching PSU data:', error);
@@ -252,7 +252,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8888/api/v1/PSUs/", PSUData);
+          await axios.post("http://127.0.0.1:8000/api/v1/PSUs/", PSUData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -312,7 +312,7 @@
             console.log('Sending update with data:', updateData);
 
             const response = await axios.patch(
-            `http://127.0.0.1:8888/api/v1/PSUs/${this.editedPSU.psu_id}`, updateData);
+            `http://127.0.0.1:8000/api/v1/PSUs/${this.editedPSU.psu_id}`, updateData);
 
             console.log('PSU updated successfully:', response.data);
             this.showEditModal = false; // Close the modal
@@ -327,7 +327,7 @@
       async deletePSU(PSUId) {
         if (confirm("Are you sure you want to delete this PSU?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8888/api/v1/PSUs/${PSUId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/PSUs/${PSUId}`);
             await this.fetchPSUData();
           } catch (error) {
             console.error("Error deleting PSU:", error);
@@ -421,7 +421,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 550px;

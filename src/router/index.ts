@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomePage from '../views/HomePage.vue' // (Optional) Main page
+import Homepage from '../views/Homepage.vue'
+import DashBoard from '../views/DashBoard.vue'
 import CPUPage from '../views/CPUPage.vue' // Import the CPU page component
 import RamPage from '../views/RamPage.vue' // Import the RAM page component
 import MainboardPage from '../views/MainboardPage.vue' 
@@ -12,7 +13,7 @@ import Dashboard from '../views/DashBoard.vue' // Import the Dashboard page comp
 import User from '../views/user.vue' // Import the User page component
 
 const routes = [
-  { path: '/', component: HomePage }, // Default route (optional)
+  { path: '/', component: DashBoard }, // Default route (optional)
   { path: '/cpu', component: CPUPage },
   { path: '/ram', component: RamPage},
   { path: '/mainboard', component: MainboardPage},
@@ -21,7 +22,7 @@ const routes = [
   { path: '/gpu', component: GPUPage}, 
   { path: '/case', component: CasePage},
   { path: '/psu', component: PSUPage},
-  { path: '/dashboard', component: Dashboard},
+  { path: '/dashboard', component: DashBoard},
   { path: '/user', component: User},
 ]
 

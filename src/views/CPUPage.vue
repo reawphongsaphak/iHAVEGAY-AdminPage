@@ -181,7 +181,7 @@ export default {
     async fetchcpuData() {
       try {
         this.loading = true;
-        const response = await axios.get('https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs');
+        const response = await axios.get('http://127.0.0.1:8000/api/v1/CPUs/');
         this.cpus = response.data;
         this.filteredcpus = [...this.cpus];
         this.loading = false;
@@ -194,7 +194,7 @@ export default {
 
     async fetchcpuById(cpuId) {
       try {
-        const response = await axios.get(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${cpuId}`);
+        const response = await axios.get(`http://127.0.0.1:8000/api/v1/CPUs/${cpuId}`);
         return response.data; // Return the cpu data
       } catch (error) {
         console.error('Error fetching cpu data:', error);
@@ -242,7 +242,7 @@ export default {
         };
         
         // Send to server
-        await axios.post("https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs", cpuData);
+        await axios.post("http://127.0.0.1:8000/CPUs", cpuData);
         
         // Reset form and close modal
         this.showAddModal = false;
@@ -277,7 +277,7 @@ export default {
     async updatecpu() {
       try {
         const response = await axios.patch(
-          `https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${this.editedcpu.cpu_id}`, 
+          `http://127.0.0.1:8000/api/v1/CPUs/${this.editedcpu.cpu_id}`, 
           this.editedcpu
         );
         console.log('cpu updated successfully:', response.data);
@@ -292,7 +292,7 @@ export default {
     async deletecpu(cpuId) {
       if (confirm("Are you sure you want to delete this cpu?")) {
         try {
-          await axios.delete(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/CPUs/${cpuId}`);
+          await axios.delete(`http://127.0.0.1:8000/api/v1/CPUs/${cpuId}`);
           await this.fetchcpuData();
         } catch (error) {
           console.error("Error deleting cpu:", error);
@@ -386,10 +386,10 @@ export default {
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 16px;
-  width: 300px;
+  width: 250px;
   text-align: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  height: 550px;
+  height: 600px;
   display: flex;
   flex-direction: column;
   justify-content: space-between; /* Pushes buttons to the bottom */

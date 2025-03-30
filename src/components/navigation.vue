@@ -1,23 +1,14 @@
 <template>
   <div class="navbar bg-dark-blue shadow-lg px-4 py-2 m-0 p-0">
-    <!-- Left Side Dropdown -->
-    <div class="flex-none">
-      <details class="dropdown">
-        <summary class="btn m-1 text-white hover:bg-light-dark-blue rounded-lg transition-all">Change</summary>
-        <ul class="menu dropdown-content bg-white text-black rounded-box z-[1] w-52 p-2 shadow-md">
-          <router-link to="/user" @click="handleUserManageClick">
-            <li><a class="hover:bg-gray-300 active:bg-gray-400">User Manage</a></li>
-          </router-link>
-          <router-link to="/" @click="handleHardwareClick">
-            <li><a class="hover:bg-gray-300 active:bg-gray-400">Hardware</a></li>
-          </router-link>
-        </ul>
-      </details>
-    </div>
 
     <!-- Center Logo/Title -->
     <div class="flex-1 text-center">
-      <a class="btn btn-ghost text-xl font-semibold text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-all">IHAVEGAY</a>
+
+      <router-link 
+        to="/dashboard"
+        class="btn btn-ghost text-xl font-semibold text-white hover:bg-white hover:bg-opacity-5 rounded-lg transition-all">
+        IHAVEGAY
+      </router-link>
     </div>
 
     <!-- Right Side Icon/Button -->
@@ -40,6 +31,7 @@
 </template>
 
 <script>
+
 export default {
   methods: {
     handleUserManageClick() {
@@ -51,5 +43,13 @@ export default {
       this.$emit('hardware-clicked')
     }
   }
+}
+
+// Navigation function
+const navigateTo = (item) => {
+  // Close the dropdown
+  
+  // Programmatically navigate to ensure it works
+  router.push('/' + item.toLowerCase())
 }
 </script>

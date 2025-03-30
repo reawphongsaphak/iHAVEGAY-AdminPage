@@ -194,7 +194,7 @@
       async fetchgpuData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8888/api/v1/GPUs/');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/GPUs/');
           this.gpus = response.data;
           this.filteredgpus = [...this.gpus];
           this.loading = false;
@@ -207,7 +207,7 @@
   
       async fetchgpuById(gpuId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8888/api/v1/GPUs/${gpuId}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/GPUs/${gpuId}`);
           return response.data; // Return the gpu data
         } catch (error) {
           console.error('Error fetching gpu data:', error);
@@ -255,7 +255,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8888/api/v1/GPUs/", gpuData);
+          await axios.post("http://127.0.0.1:8000/api/v1/GPUs/", gpuData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -291,7 +291,7 @@
       async updategpu() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8888/api/v1/GPUs/${this.editedgpu.gpu_id}`, 
+            `http://127.0.0.1:8000/api/v1/GPUs/${this.editedgpu.gpu_id}`, 
             this.editedgpu
           );
           console.log('gpu updated successfully:', response.data);
@@ -306,7 +306,7 @@
       async deletegpu(gpuId) {
         if (confirm("Are you sure you want to delete this gpu?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8888/api/v1/GPUs/${gpuId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/GPUs/${gpuId}`);
             await this.fetchgpuData();
           } catch (error) {
             console.error("Error deleting gpu:", error);
@@ -400,7 +400,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 550px;

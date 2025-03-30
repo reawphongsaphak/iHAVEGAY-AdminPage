@@ -1,50 +1,27 @@
 <template>
-  <div class="w-60 bg-dark-blue p-4 shadow-lg h-screen flex flex-col">
-    <ul class="menu bg-side-bar rounded-box w-full flex-1">
-      <li>
-        <dashboard />
-        <div class="relative" ref="dropdownRef">
-          <!-- Dropdown trigger button with SAO-style design -->
-          <button 
-            @click.stop="toggleDropdown" 
-            class="flex items-center justify-between w-full p-3 text-lg font-medium bg-side-bar hover:"
-          >
-            <div class="flex items-center text-white">
-              <span class="material-icons mr-2 text-white">menu</span>
-              Products
-            </div>
-            <span class="ml-1 transition-transform duration-900 text-white text-2xl" :class="{ 'rotate-90': isOpen }">▹</span>
-          </button>
-          
-          <!-- Dropdown menu with animation -->
-          <transition
-            enter-active-class="transition duration-500 ease-out"
-            enter-from-class="transform opacity-0 -translate-y-2"
-            enter-to-class="transform opacity-100 translate-y-0"
-            leave-active-class="transition duration-300 ease-in"
-            leave-from-class="transform opacity-100 translate-y-0"
-            leave-to-class="transform opacity-0 -translate-y-2"
-          >
-            <ul 
-              v-if="isOpen" 
-              class="absolute top-full w-full bg-side-bar bg-opacity-80 shadow-lg"
-            >
-              <li v-for="(item, index) in menuItems" :key="index" class="last:border-b-0">
-                <router-link 
-                  :to="'/' + item.name.toLowerCase()" 
-                  class="text-m block px-4 py-3 hover:bg-white hover:bg-opacity-10 w- text-left transition-all duration-200 text-white flex items-center"
-                  @click="navigateTo(item.name)"
-                >
-                  <span class="material-icons mr-3">{{ item.icon }}</span>
-                  {{ item.name }}
-                </router-link>
-              </li>
-            </ul>
-          </transition>
-        </div>
+  <div class="h-30 w-60 bg-white p-4 h-screen flex flex-col">
+    <ul class="menu bg-white rounded-box w-25px flex-1">
+      <li class ="ml-2 font-bold text-xl"> 
+        <router-link :to="'/'">
+        Dashboard
+        </router-link>
+      </li>
+
+      <li v-for="(item, index) in menuItems" :key="index" class="last:border-b-0">
+        <router-link 
+          :to="'/' + item.name.toLowerCase()" 
+          class="text-m block px-6 py-5 hover:bg-white hover:bg-opacity-10 w- text-left flex items-center"
+          @click="navigateTo(item.name)"
+        >
+          <span class="material-icons mr-3">{{ item.icon }}</span>
+          {{ item.name }}
+        </router-link>
       </li>
     </ul>
   </div>
+
+
+
 </template>
 
 <script setup>
@@ -69,11 +46,11 @@ const menuItems = ref([
 ])
 
 // Toggle dropdown state
-const isOpen = ref(false)
+const isOpen = ref(true)
 const dropdownRef = ref(null)
 
 const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
+  isOpen.value = true
 }
 
 // Data fetching function

@@ -208,7 +208,7 @@
       async fetchmainboardData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8888/api/v1/mainboards/');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/mainboards/');
           this.mainboards = response.data;
           this.filteredmainboards = [...this.mainboards];
           this.loading = false;
@@ -221,7 +221,7 @@
   
       async fetchmainboardById(mainboardId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8888/api/v1/mainboards/${mainboardId}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/mainboards/${mainboardId}`);
           return response.data; // Return the mainboard data
         } catch (error) {
           console.error('Error fetching mainboard data:', error);
@@ -270,7 +270,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8888/api/v1/mainboards/", mainboardData);
+          await axios.post("http://127.0.0.1:8000/api/v1/mainboards/", mainboardData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -307,7 +307,7 @@
       async updatemainboard() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8888/api/v1/mainboards/${this.editedmainboard.mainboard_id}`, 
+            `http://127.0.0.1:8000/api/v1/mainboards/${this.editedmainboard.mainboard_id}`, 
             this.editedmainboard
           );
           console.log('mainboard updated successfully:', response.data);
@@ -322,7 +322,7 @@
       async deletemainboard(mainboardId) {
         if (confirm("Are you sure you want to delete this mainboard?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8888/api/v1/mainboards/${mainboardId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/mainboards/${mainboardId}`);
             await this.fetchmainboardData();
           } catch (error) {
             console.error("Error deleting mainboard:", error);
@@ -416,7 +416,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 570px;

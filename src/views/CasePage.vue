@@ -195,7 +195,7 @@
       async fetchCaseData() {
         try {
           this.loading = true;
-          const response = await axios.get('https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/cases/');
           this.Cases = response.data;
           this.filteredCases = [...this.Cases];
           this.loading = false;
@@ -209,7 +209,7 @@
       async fetchCaseById(caseId) {
         console.log('Fetching case with caseId:', caseId);
         try {
-            const response = await axios.get(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${caseId}`);
+            const response = await axios.get(`http://127.0.0.1:8000/api/v1/cases/${caseId}`);
             return response.data;
         } catch (error) {
             console.error('Error fetching Case data:', error);
@@ -312,7 +312,7 @@
             
             console.log('Sending new case data:', caseData);
             
-            await axios.post("https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases", caseData);
+            await axios.post("http://127.0.0.1:8000/api/v1/cases/", caseData);
             
             this.showAddModal = false;
             await this.fetchCaseData();
@@ -396,7 +396,7 @@
             // Log what we're about to send
             console.log('Sending update data:', updatedCase);
   
-            await axios.patch(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${this.editedCase.case_id}`, updatedCase);
+            await axios.patch(`http://127.0.0.1:8000/api/v1/cases/${this.editedCase.case_id}`, updatedCase);
             this.showEditModal = false;
             await this.fetchCaseData();
         } catch (error) {
@@ -412,7 +412,7 @@
       async deleteCase(caseId) {
         if (confirm("Are you sure you want to delete this Case?")) {
           try {
-            await axios.delete(`https://ea80-2001-44c8-4407-365d-a95d-f2b-1a2c-525f.ngrok-free.app/api/v1/cases/${caseId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/cases/${caseId}`);
             await this.fetchCaseData();
           } catch (error) {
             console.error("Error deleting Case:", error);
@@ -506,10 +506,10 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 550px;
+    height: 600px;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Pushes buttons to the bottom */

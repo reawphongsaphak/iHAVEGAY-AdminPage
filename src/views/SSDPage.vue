@@ -176,7 +176,7 @@
       async fetchssdData() {
         try {
           this.loading = true;
-          const response = await axios.get('http://127.0.0.1:8888/api/v1/storage/ssds');
+          const response = await axios.get('http://127.0.0.1:8000/api/v1/storage/ssds');
           this.ssds = response.data;
           this.filteredssds = [...this.ssds];
           this.loading = false;
@@ -189,7 +189,7 @@
   
       async fetchssdById(ssdId) {
         try {
-          const response = await axios.get(`http://127.0.0.1:8888/api/v1/storage/ssds/${ssdId}`);
+          const response = await axios.get(`http://127.0.0.1:8000/api/v1/storage/ssds/${ssdId}`);
           return response.data; // Return the ssd data
         } catch (error) {
           console.error('Error fetching ssd data:', error);
@@ -236,7 +236,7 @@
           };
           
           // Send to server
-          await axios.post("http://127.0.0.1:8888/api/v1/storage/ssds", ssdData);
+          await axios.post("http://127.0.0.1:8000/api/v1/storage/ssds", ssdData);
           
           // Reset form and close modal
           this.showAddModal = false;
@@ -271,7 +271,7 @@
       async updatessd() {
         try {
           const response = await axios.patch(
-            `http://127.0.0.1:8888/api/v1/storage/ssds/${this.editedssd.ssd_id}`, 
+            `http://127.0.0.1:8000/api/v1/storage/ssds/${this.editedssd.ssd_id}`, 
             this.editedssd
           );
           console.log('ssd updated successfully:', response.data);
@@ -286,7 +286,7 @@
       async deletessd(ssdId) {
         if (confirm("Are you sure you want to delete this ssd?")) {
           try {
-            await axios.delete(`http://127.0.0.1:8888/api/v1/storage/ssds/${ssdId}`);
+            await axios.delete(`http://127.0.0.1:8000/api/v1/storage/ssds/${ssdId}`);
             await this.fetchssdData();
           } catch (error) {
             console.error("Error deleting ssd:", error);
@@ -380,7 +380,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     padding: 16px;
-    width: 300px;
+    width: 250px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     height: 500px;
