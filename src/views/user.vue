@@ -60,6 +60,8 @@
           <th class="border border-gray-300 px-4 py-2">Order ID</th>
           <th class="border border-gray-300 px-4 py-2">Total Price</th>
           <th class="border border-gray-300 px-4 py-2">Date</th>
+          <th class="border border-gray-300 px-4 py-2">Status</th>
+
         </tr>
       </thead>
       <tbody>
@@ -68,6 +70,7 @@
           <td class="border border-gray-300 px-4 py-2">{{ txn.orderId }}</td>
           <td class="border border-gray-300 px-4 py-2">฿{{ txn.totalPrice }}</td>
           <td class="border border-gray-300 px-4 py-2">{{ txn.date }}</td>
+          <td class="border border-gray-300 px-4 py-2">{{ txn.status }}</td>
         </tr>
       </tbody>
     </table>
@@ -121,11 +124,11 @@ export default {
         { userId: 5, totalSpent: 23000 }
       ],
       latestTransactions: [
-       { userId: 1, orderId: 'ORD001', totalPrice: 7800, date: '2024-03-29' },
-       { userId: 3, orderId: 'ORD002', totalPrice: 12200, date: '2024-03-28' },
-       { userId: 2, orderId: 'ORD003', totalPrice: 5400, date: '2024-03-28' },
-       { userId: 5, orderId: 'ORD004', totalPrice: 3300, date: '2024-03-27' },
-       { userId: 4, orderId: 'ORD005', totalPrice: 11100, date: '2024-03-27' }
+       { userId: 1, orderId: 'ORD001', totalPrice: 7800, date: '2024-03-29', status: 'Paid' },
+       { userId: 3, orderId: 'ORD002', totalPrice: 12200, date: '2024-03-28', status: 'Pending' },
+       { userId: 2, orderId: 'ORD003', totalPrice: 5400, date: '2024-03-28', status: 'Paid' },
+       { userId: 5, orderId: 'ORD004', totalPrice: 3300, date: '2024-03-27', status: 'Failed' },
+       { userId: 4, orderId: 'ORD005', totalPrice: 11100, date: '2024-03-27', status: 'Paid' }
      ]
 
     };
