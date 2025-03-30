@@ -6,9 +6,9 @@ This template should help get you started developing with Vue 3 in Vite.
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Type Support for `.vue` Imports in TS
+## Type Support for `.vue` Imporvue in vue
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+TypeScript cannot handle type information for `.vue` imporvue by default, so we replace the `vuec` CLI with `vue-vuec` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
 
 ## Customize configuration
 
@@ -37,3 +37,38 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Libraries
+
+- daisyui
+- [axios](https://github.com/axios/axios)
+
+
+
+## Directories
+```
+📱iHAVEGAY-AdminPage
+┃
+┣━ 📁 src
+┃   ┣>  📁 router
+┃   ┃   ┣>  index.ts
+┃   ┃
+┃   ┣>  📁 router
+┃   ┃   ┣>  CPUPage.vue
+┃   ┃   ┣>  CasePage.vue
+┃   ┃   ┣>  DashBoardPage.vue
+┃   ┃   ┣>  GPUPage.vue
+┃   ┃   ┣>  Homepage.vue
+┃   ┃   ┣>  M2Page.vue
+┃   ┃   ┣>  MainboardPage.vue
+┃   ┃   ┣>  PSUPage.vue
+┃   ┃   ┣>  RamPage.vue
+┃   ┃   ┣>  SSD.vue
+┃   ┃
+┃   ┣>  App.vue
+┃   ┣>  index.css
+┃   ┣>  main.ts
+┃
+┣>  LICENSE
+┃
+┣>  README.md
